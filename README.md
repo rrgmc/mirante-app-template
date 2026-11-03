@@ -8,7 +8,7 @@ Custom builds are on trial. Until the trial ends, the official app stays [`miran
 
 1. Choose **Use this template** on GitHub, and make your repository from it.
 2. In `LICENSE`, put your own name, or choose another licence. Your modules decide what you may choose: see [licences](#licences).
-3. In `mirante.json`, list the modules you want. See [the manifest](#the-manifest).
+3. In `mirante.json`, list the modules you want, and give your app an edition. See [the manifest](#the-manifest).
 4. In `CMakeLists.txt`, set `MIRANTE_VERSION` to your first version, such as `0.1.0`.
 5. Set up the token for updates. See [updates](#updates).
 6. Protect your default branch, so that changes reach it only through pull requests whose checks pass: in **Settings > Rules**, require the checks `build / build (windows-2022)`, `build / build (macos-15)` and `build / build (ubuntu-24.04)`.
@@ -19,6 +19,7 @@ Each push to the default branch that raises `MIRANTE_VERSION` publishes the rele
 
 ```json
 {
+  "edition": "myedition",
   "qt": ["Pdf", "PdfWidgets"],
   "core": { "repo": "https://github.com/rrgmc/mirante-core", "ref": "<tag or commit>" },
   "modules": [
@@ -26,18 +27,36 @@ Each push to the default branch that raises `MIRANTE_VERSION` publishes the rele
       "name": "mirante_modules",
       "repo": "https://github.com/rrgmc/mirante-modules",
       "ref": "<tag or commit>",
-      "folders": ["github", "web"]
+      "folders": ["notes", "web", { "folder": "document", "optional": true }]
+    },
+    {
+      "name": "app_modules",
+      "local": "modules",
+      "folders": ["acmetickets"]
     }
   ]
 }
 ```
 
+- **`edition`** names your app's build: lowercase letters, digits and `-`. It goes into the names of your packages, such as `mirante-myedition-0.1.0-win64.exe`, and into the About dialog and the release's title. Every edition is still the same app, so it shares settings with any other Mirante on the computer. Without it, the packages are named `mirante-0.1.0-win64.exe` and so on.
 - **`core`** is the core of Mirante. Its `ref` is also in `.github/workflows/build.yml` and `update.yml`, and the build fails if they differ. The update job changes all of them.
 - **`modules`** lists repositories of modules. Each has a `name` of your choice, in lowercase letters, digits and underscores, the repository, a `ref`, and the `folders` to build. Each folder holds one module. `"."` is the top of a repository that holds one module.
+- **`local`** in place of `repo` and `ref` names a folder of your own repository, for modules that only your app uses. See [`modules/`](modules/README.md).
 - **`qt`** lists the Qt modules that your modules need beyond what the core needs. Only the `document` module needs any: `Pdf` and `PdfWidgets`. Without it, the list can be empty.
 - A **`ref`** is a tag, such as `v0.7.0`, or a whole commit hash. Pin a tag to take only releases. Pin a commit to take every change on the default branch.
 
-The first-party modules are in [`mirante-modules`](https://github.com/rrgmc/mirante-modules). Its README lists what each one does.
+A folder can also be an object, with these settings:
+
+- **`"optional": true`** lists the module but leaves it out of the build. Turn it on with `enable-modules` in `.github/workflows/build.yml`, such as `enable-modules: 'github jira'`. This template lists the work modules this way.
+- **`"options"`** sets the module's build options, as texts, such as `{ "MAX_ITEMS": "50" }`. The module's README lists its options.
+- **`"extensions"`** replaces part of the module's code at an extension point that the module offers, such as `{ "body": { "local": "extensions/my-body" } }`. The module's README lists its points. See [extension points](https://github.com/rrgmc/mirante-core/blob/master/docs/modules.md#extension-points).
+
+The first-party modules are in two repositories:
+
+- [`mirante-modules`](https://github.com/rrgmc/mirante-modules): documents, folders, images, notes and web pages.
+- [`mirante-modules-work`](https://github.com/rrgmc/mirante-modules-work): GitHub, GitLab, Jira and Claude.
+
+Each README lists what its modules do.
 
 ## Updates
 
@@ -65,7 +84,7 @@ ctest --preset dev
 
 - **Modules are trusted code.** A module runs inside the app with everything the app can reach, including your tokens and web logins. Add only modules whose authors you trust, and read their code when you change their pin. Each build lists, on its run's summary page, which modules use the keychain, the network, processes and web storage. See [reviewing a module](https://github.com/rrgmc/mirante-core/blob/master/docs/modules.md#reviewing-a-module).
 - **Your packages are not signed.** Windows SmartScreen warns when they are first opened, and macOS refuses the app until you allow it in **System Settings > Privacy & Security**. The macOS package is signed ad hoc only.
-- **Every build is the same app,** with the same name and settings. Two builds on one computer share their settings, workspaces and tokens. **Help > About** lists the modules of a build, with their repositories and commits.
+- **Every build is the same app,** with the same name and settings, whatever its edition. Two builds on one computer share their settings, workspaces and tokens, and installing one replaces the other. **Help > About** shows the edition, and lists the modules and extensions of a build, with their repositories and commits.
 
 ## Licences
 

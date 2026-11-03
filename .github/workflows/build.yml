@@ -21,17 +21,21 @@ permissions:
 
 jobs:
   build:
-    uses: rrgmc/mirante-core/.github/workflows/build-app.yml@6ff25afe2fbd1f2759d3bf959b0ddd7125c1f071
+    uses: rrgmc/mirante-core/.github/workflows/build-app.yml@a966cf2597adbbeff3895456deeff1cc4458b34c
     with:
       release-tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
       # The template itself publishes nothing.
       release-new-version: ${{ !github.event.repository.is_template }}
+      # The optional modules of mirante.json to build, separated by spaces,
+      # such as: claude github gitlab jira
+      enable-modules: ''
 
   publish:
     needs: build
     if: needs.build.outputs.release-tag != ''
     permissions:
       contents: write
-    uses: rrgmc/mirante-core/.github/workflows/release-app.yml@6ff25afe2fbd1f2759d3bf959b0ddd7125c1f071
+    uses: rrgmc/mirante-core/.github/workflows/release-app.yml@a966cf2597adbbeff3895456deeff1cc4458b34c
     with:
       tag: ${{ needs.build.outputs.release-tag }}
+      edition: ${{ needs.build.outputs.edition }}
