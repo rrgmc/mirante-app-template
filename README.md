@@ -93,3 +93,7 @@ The core and the first-party modules are released under the MIT License. A modul
 ## Writing a module
 
 [Writing a module](https://github.com/rrgmc/mirante-core/blob/master/docs/writing-a-module.md) in the core says how to make one in a repository of its own.
+
+## Author
+
+This template is by Rangel Reale <realerangel@gmail.com>. An app made from it is yours: put your own name here.
