@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   build:
-    uses: rrgmc/mirante-core/.github/workflows/build-app.yml@a966cf2597adbbeff3895456deeff1cc4458b34c
+    uses: rrgmc/mirante-core/.github/workflows/build-app.yml@v0.8.0
     with:
       release-tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
       # The template itself publishes nothing.
@@ -35,7 +35,7 @@ jobs:
     if: needs.build.outputs.release-tag != ''
     permissions:
       contents: write
-    uses: rrgmc/mirante-core/.github/workflows/release-app.yml@a966cf2597adbbeff3895456deeff1cc4458b34c
+    uses: rrgmc/mirante-core/.github/workflows/release-app.yml@v0.8.0
     with:
       tag: ${{ needs.build.outputs.release-tag }}
       edition: ${{ needs.build.outputs.edition }}
