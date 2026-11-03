@@ -94,6 +94,10 @@ The core and the first-party modules are released under the MIT License. A modul
 
 [Writing a module](https://github.com/rrgmc/mirante-core/blob/master/docs/writing-a-module.md) in the core says how to make one in a repository of its own.
 
+## Working with an AI agent
+
+[AGENTS.md](AGENTS.md) tells coding agents how this repository works: the pins that must match, that merging can publish a release, and that modules are trusted code. Claude Code reads it through `CLAUDE.md`. Keep it when you make your app, and add your own rules to it.
+
 ## Author
 
 This template is by Rangel Reale <realerangel@gmail.com>. An app made from it is yours: put your own name here.
