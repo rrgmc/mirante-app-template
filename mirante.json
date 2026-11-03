@@ -1,17 +1,17 @@
 {
   "qt": ["Pdf", "PdfWidgets"],
-  "core": { "repo": "https://github.com/rrgmc/mirante-core", "ref": "a966cf2597adbbeff3895456deeff1cc4458b34c" },
+  "core": { "repo": "https://github.com/rrgmc/mirante-core", "ref": "v0.8.0" },
   "modules": [
     {
       "name": "mirante_modules",
       "repo": "https://github.com/rrgmc/mirante-modules",
-      "ref": "03db4623a9f18a583e9f21bf07f90a599955288e",
+      "ref": "v0.8.0",
       "folders": ["document", "folder", "image", "notes", "web"]
     },
     {
       "name": "mirante_modules_work",
       "repo": "https://github.com/rrgmc/mirante-modules-work",
-      "ref": "3471fd11350ff94d8e832c20a5bc170e72633b53",
+      "ref": "v0.8.0",
       "folders": [
         { "folder": "claude", "optional": true },
         { "folder": "github", "optional": true },
