@@ -4,9 +4,10 @@
 # vX.Y.Z-rc.N. The refs below must match the core's ref in mirante.json.
 
 name: Build
-# Pull request runs lead with the number. Other runs keep GitHub's default
-# title, because an empty run-name means the default.
-run-name: ${{ github.event_name == 'pull_request' && format('#{0} {1}', github.event.pull_request.number, github.event.pull_request.title) || '' }}
+# Pull request runs lead with the number, and a pushed tag's run is titled
+# "Release vX.Y.Z". Other runs keep GitHub's default title, because an empty
+# run-name means the default.
+run-name: ${{ github.event_name == 'pull_request' && format('#{0} {1}', github.event.pull_request.number, github.event.pull_request.title) || github.ref_type == 'tag' && format('Release {0}', github.ref_name) || '' }}
 
 on:
   push:
