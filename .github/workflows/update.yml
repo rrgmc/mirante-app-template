@@ -1,0 +1,19 @@
+# Once a week, opens a pull request that moves the pins to the newest versions
+# of the core and the modules. It needs the secret MIRANTE_UPDATE_TOKEN: see
+# the README. The ref below must match the core's ref in mirante.json.
+
+name: Update
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    uses: rrgmc/mirante-core/.github/workflows/update-app.yml@6ff25afe2fbd1f2759d3bf959b0ddd7125c1f071
+    secrets:
+      token: ${{ secrets.MIRANTE_UPDATE_TOKEN }}

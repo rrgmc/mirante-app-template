@@ -1,0 +1,37 @@
+# Builds, tests and packages this app with the core's workflows. A push to the
+# default branch that raised MIRANTE_VERSION in CMakeLists.txt publishes the
+# release vX.Y.Z, as a merged update does, and so does a pushed tag vX.Y.Z or
+# vX.Y.Z-rc.N. The refs below must match the core's ref in mirante.json.
+
+name: Build
+
+on:
+  push:
+    branches: [master]
+    tags:
+      - 'v[0-9]*.[0-9]*.[0-9]*'
+  pull_request:
+
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: rrgmc/mirante-core/.github/workflows/build-app.yml@6ff25afe2fbd1f2759d3bf959b0ddd7125c1f071
+    with:
+      release-tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+      # The template itself publishes nothing.
+      release-new-version: ${{ !github.event.repository.is_template }}
+
+  publish:
+    needs: build
+    if: needs.build.outputs.release-tag != ''
+    permissions:
+      contents: write
+    uses: rrgmc/mirante-core/.github/workflows/release-app.yml@6ff25afe2fbd1f2759d3bf959b0ddd7125c1f071
+    with:
+      tag: ${{ needs.build.outputs.release-tag }}
