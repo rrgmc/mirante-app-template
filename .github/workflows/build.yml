@@ -15,6 +15,10 @@ on:
     tags:
       - 'v[0-9]*.[0-9]*.[0-9]*'
   pull_request:
+  # A pull request in the merge queue is checked again on top of master, so
+  # that branches need not be brought up to date by hand. See decision 0154
+  # in mirante-core.
+  merge_group:
 
 concurrency:
   group: build-${{ github.event.pull_request.number || github.sha }}
